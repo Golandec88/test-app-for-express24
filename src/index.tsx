@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css'
-import 'antd/dist/antd.less';
-import './assets/antd-variables.less';
-import './assets/index.less';
+
 import App from './App';
+import configureStore from './store/configure-store';
+import './assets/index.less';
 
 ReactDOM.render(
-  <React.StrictMode><App/></React.StrictMode>,
-  document.getElementById('root')
+    <Provider store={configureStore}>
+        <React.StrictMode><App/></React.StrictMode>,
+    </Provider>,
+    document.getElementById('root')
 );

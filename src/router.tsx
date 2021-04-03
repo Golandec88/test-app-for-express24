@@ -3,8 +3,9 @@ import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
 
 import DefaultLayout from "./layouts/default";
 import EmptyLayout from "./layouts/empty";
-import IndexPage from './pages/home'
+import CalcPage from './pages/calc'
 import ErrorPage from "./pages/error";
+import ExchangesPage from "./pages/exchanges";
 
 const Routes:React.FC = () => (
     <BrowserRouter>
@@ -17,9 +18,10 @@ const Routes:React.FC = () => (
             <Route path='/' render={() => (
                 <DefaultLayout>
                     <Switch>
-                        <Route path='/home' component={IndexPage} />
+                        <Route path='/exchanges' component={ExchangesPage} />
+                        <Route path='/calc' component={CalcPage} />
                         <Route path='/'>
-                            <Redirect to={{pathname: '/home'}} />
+                            <Redirect to={{pathname: '/exchanges'}} />
                         </Route>
                     </Switch>
                 </DefaultLayout>

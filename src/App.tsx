@@ -2,7 +2,7 @@ import React from "react";
 import Routes from "./router";
 
 const App: React.FC = () => (
-    <div className='app container-fluid px-0' style={{height: '100vh'}}>
+    <div className='app container-fluid px-0' >
         <Routes />
     </div>
 )

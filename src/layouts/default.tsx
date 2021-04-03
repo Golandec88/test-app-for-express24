@@ -1,56 +1,70 @@
-import React from "react";
-import {Layout, Breadcrumb } from "antd";
+import React, {useEffect, useState} from "react";
+import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {Layout, Select} from "antd";
 import {Content, Footer, Header } from "antd/lib/layout/layout";
 
 import logo from '../static/logo.png'
-import styled from "styled-components";
-import {Link} from "react-router-dom";
+import {ICurrencyState} from "../store/currencies/types";
+import {getCurrencies} from "../store/currencies/actionCreators";
+import {useCookies} from "react-cookie";
+
+const { Option } = Select;
 
 const DefaultLayout :React.FC = ({children}) => {
+    const [cookies, setCookie, removeCookie] = useCookies();
+    const [activeCurrency, setActiveCurrency] = useState(cookies['user-currency'] || "RUB")
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getCurrencies(""))
+    }, [dispatch])
+
+    const changeHandler: (val: string) => void = (val) => {
+        setActiveCurrency(val)
+        removeCookie('user-currency')
+        setCookie('user-currency', val)
+        getCurrencies(cookies['user-currency'])
+    }
+
+    const currenciesItems = useSelector((state: {currencies: ICurrencyState}) => state.currencies.items)
+
     return (
-        <Layout className="layout h-100">
-            <div className="container h-100">
-                <StyledHeader>
-                    <Link to={{pathname: '/home'}} className="logo">
+        <Layout className="app-layout">
+            <div className="container d-flex flex-column h-100">
+                <Header className="app-header">
+                    <Link to={{pathname: '/exchanges'}} className="logo">
                         <img src={logo} alt="logo"/>
                     </Link>
-                    <StyledBreadCrumbs>
-                        <Breadcrumb.Item>
-                            <Link to={{pathname: '/home'}}>
-                                Home
-                            </Link>
-                        </Breadcrumb.Item>
-                    </StyledBreadCrumbs>
-                </StyledHeader>
-                <StyledContent>
+                    <Link to={{pathname: '/exchanges'}}>
+                        <p className="mb-0">Курсы валют</p>
+                    </Link>
+                    <Link to={{pathname: '/calc'}}>
+                        <p className="ml-3 mb-0">Конвертер</p>
+                    </Link>
+                    <div className="currency">
+                        <span className="mr-3">
+                            Активная валюта:
+                        </span>
+                        <Select
+                            defaultValue={activeCurrency}
+                            loading={!currenciesItems}
+                            className="app-select"
+                            style={{ width: 70 }}
+                            onChange={changeHandler}
+                        >
+                            {Object.keys(currenciesItems.rates).map(curr => <Option key={`key-${curr}`} value={curr}>{curr}</Option>)}
+                        </Select>
+                    </div>
+                </Header>
+                <Content className="app-content">
                     {children}
-                </StyledContent>
+                </Content>
+                <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
             </div>
-            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
+
         </Layout>
     )
 }
 
-const StyledHeader = styled(Header)`
-  display: flex;
-  margin: 10px 10px 20px;
-  padding: .3rem 2rem;
-  height: auto;
-  background: white;
-  border-radius: 30px;
-  .logo img {
-    width: 50px;
-    margin-right: 1.5rem;
-  }
-`
-const StyledBreadCrumbs = styled(Breadcrumb)`
-  display: flex;
-  align-items: center;
-`
-const StyledContent = styled(Content)`
-  margin: 10px;
-  border-radius: 30px;
-  background: white;
-  padding: 2rem 2.5rem;
-`
 export default DefaultLayout
