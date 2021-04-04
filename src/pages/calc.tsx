@@ -1,6 +1,5 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useCookies} from "react-cookie";
 
 import {getCurrencies} from "../store/currencies/actionCreators";
 import NotificationCreator from "../plugins/notification-creator";
@@ -8,7 +7,6 @@ import Search from '../components/search'
 import {ICurrencyState} from "../store/currencies/types";
 
 const CalcPage:React.FC = () => {
-    const [cookie] = useCookies()
     const state = useSelector((state: {currencies: ICurrencyState}) => state.currencies)
 
     const dispatch = useDispatch()
@@ -24,8 +22,8 @@ const CalcPage:React.FC = () => {
     return (
         <>
             <Search loading={state.loading} search={onSearch} />
-            <h4 className="mt-4 text-center">{`${!state.items.rates[cookie['user-currency']] ? Object.values(state.items.rates)[0] : ''}`}</h4>
+            <h4 className="mt-4 text-center">{`${!(Object.keys(state.items.rates).length > 1) ? Object.values(state.items.rates)[0] : ''}`}</h4>
         </>
     )
-}
+};
 export default CalcPage

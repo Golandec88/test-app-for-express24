@@ -52,6 +52,7 @@ const DefaultLayout :React.FC = ({children}) => {
                             className="app-select"
                             style={{ width: 70 }}
                             onChange={changeHandler}
+                            onFocus={() => dispatch(getCurrencies(""))}
                         >
                             {Object.keys(currenciesItems.rates).map(curr => <Option key={`key-${curr}`} value={curr}>{curr}</Option>)}
                         </Select>
